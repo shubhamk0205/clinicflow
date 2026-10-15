@@ -1,0 +1,19 @@
+# Lab 1: ImagePullBackOff — the image tag does not exist.
+# kubectl apply -f troubleshooting/broken-image.yaml
+# kubectl get pods -n clinicflow ; kubectl describe pod <pod> -n clinicflow
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clinicflow-broken-image
+  namespace: clinicflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: broken-image}
+  template:
+    metadata:
+      labels: {app: broken-image}
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/shubhamk0205/clinicflow-backend:does-not-exist

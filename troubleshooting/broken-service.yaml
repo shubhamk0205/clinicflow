@@ -1,0 +1,13 @@
+# Lab 2: Service with no endpoints — selector matches no Pod labels.
+# kubectl apply -f troubleshooting/broken-service.yaml
+# kubectl get endpoints -n clinicflow ; kubectl get pods -n clinicflow --show-labels
+apiVersion: v1
+kind: Service
+metadata:
+  name: clinicflow-broken-service
+  namespace: clinicflow
+spec:
+  selector: {app: label-that-does-not-exist}
+  ports:
+    - port: 8000
+      targetPort: 8000
