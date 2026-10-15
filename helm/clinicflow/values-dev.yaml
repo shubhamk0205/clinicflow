@@ -1,0 +1,10 @@
+# Local cluster (minikube / kind / Docker Desktop)
+frontend:
+  replicas: 2
+backend:
+  replicas: 2
+ingress:
+  enabled: true
+  host: clinicflow.local
+hpa:
+  enabled: true

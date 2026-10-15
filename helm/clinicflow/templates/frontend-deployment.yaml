@@ -1,0 +1,36 @@
+{{- $name := printf "%s-frontend" (include "clinicflow.name" .) -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ $name }}
+    {{- include "clinicflow.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}
+    spec:
+      {{- include "clinicflow.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.image }}:{{ .Values.frontend.tag }}"
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: BACKEND_URL
+              value: "http://{{ include "clinicflow.name" . }}-backend:8000"
+          readinessProbe:
+            httpGet: {path: /, port: http}
+            initialDelaySeconds: 5
+          livenessProbe:
+            httpGet: {path: /, port: http}
+            initialDelaySeconds: 10
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}

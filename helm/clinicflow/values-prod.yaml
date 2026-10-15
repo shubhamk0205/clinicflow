@@ -1,0 +1,14 @@
+# AWS EKS
+frontend:
+  image: ghcr.io/shubhamk0205/clinicflow-frontend
+backend:
+  image: ghcr.io/shubhamk0205/clinicflow-backend
+postgres:
+  storageClassName: gp2   # EBS volume via the aws-ebs-csi-driver addon from Terraform
+ingress:
+  enabled: true
+  host: ""                # empty = match any host, so the ingress-nginx ELB hostname works directly
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6

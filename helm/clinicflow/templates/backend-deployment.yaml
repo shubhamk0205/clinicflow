@@ -1,0 +1,45 @@
+{{- $name := printf "%s-backend" (include "clinicflow.name" .) -}}
+{{- $pg := printf "%s-postgres" (include "clinicflow.name" .) -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ $name }}
+    {{- include "clinicflow.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.hpa.enabled }}
+  replicas: {{ .Values.backend.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}
+    spec:
+      {{- include "clinicflow.imagePullSecrets" . | nindent 6 }}
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image }}:{{ .Values.backend.tag }}"
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: DB_USER
+              valueFrom: {secretKeyRef: {name: {{ $pg }}, key: username}}
+            - name: DB_PASSWORD
+              valueFrom: {secretKeyRef: {name: {{ $pg }}, key: password}}
+            - name: DATABASE_URL
+              value: "postgresql+psycopg://$(DB_USER):$(DB_PASSWORD)@{{ $pg }}:5432/{{ .Values.postgres.database }}"
+          readinessProbe:
+            httpGet: {path: /ready, port: http}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            initialDelaySeconds: 20
+            periodSeconds: 15
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}

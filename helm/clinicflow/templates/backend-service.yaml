@@ -1,0 +1,16 @@
+{{- $name := printf "%s-backend" (include "clinicflow.name" .) -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  labels:
+    app: {{ $name }}
+    {{- include "clinicflow.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ $name }}
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http

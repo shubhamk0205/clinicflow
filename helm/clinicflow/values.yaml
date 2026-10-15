@@ -1,0 +1,43 @@
+imagePullSecrets: []   # e.g. [{name: ghcr-secret}] if the GHCR packages are private
+
+frontend:
+  image: ghcr.io/shubhamk0205/clinicflow-frontend
+  tag: latest          # CI overrides this with the commit SHA
+  replicas: 2
+  resources:
+    requests: {cpu: 50m, memory: 64Mi}
+    limits: {cpu: 200m, memory: 128Mi}
+
+backend:
+  image: ghcr.io/shubhamk0205/clinicflow-backend
+  tag: latest          # CI overrides this with the commit SHA
+  replicas: 2
+  resources:
+    requests: {cpu: 100m, memory: 256Mi}
+    limits: {cpu: 500m, memory: 512Mi}
+
+postgres:
+  image: postgres:16-alpine
+  database: clinicflow
+  username: clinicflow
+  password: clinicflow   # override with --set postgres.password=... outside the classroom
+  storage: 5Gi
+  storageClassName: ""   # "" = cluster default
+
+ingress:
+  enabled: false
+  className: nginx
+  host: clinicflow.local
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 60
+
+monitoring:
+  serviceMonitor:
+    enabled: true
+    releaseLabel: kube-prometheus-stack   # must match the Prometheus Helm release name
+  grafanaDashboard:
+    enabled: true
