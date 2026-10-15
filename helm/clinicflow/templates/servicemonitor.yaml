@@ -1,0 +1,17 @@
+{{- if .Values.monitoring.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "clinicflow.name" . }}-backend
+  labels:
+    release: {{ .Values.monitoring.serviceMonitor.releaseLabel }}
+    {{- include "clinicflow.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "clinicflow.name" . }}-backend
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s
+{{- end }}
