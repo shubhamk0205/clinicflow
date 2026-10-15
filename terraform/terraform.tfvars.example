@@ -1,0 +1,11 @@
+# Copy to terraform.tfvars and adjust. Never put AWS keys here —
+# use `aws configure` or environment variables for credentials.
+aws_region          = "ap-south-1"
+environment         = "dev"
+cluster_name        = "clinicflow-eks"
+cluster_version     = "1.31"
+vpc_cidr            = "10.30.0.0/16"
+node_instance_types = ["t3.medium"]
+node_min_size       = 2
+node_max_size       = 4
+node_desired_size   = 2
