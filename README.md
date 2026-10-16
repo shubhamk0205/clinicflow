@@ -38,6 +38,13 @@ Developer → GitHub → GitHub Actions ─┬─ pytest + frontend build
 
 ## Submission evidence (by grading module)
 
+🎬 **Demo video (2 min 46 s):** [`docs/clinicflow-demo.mp4`](docs/clinicflow-demo.mp4). It's a captioned browser walkthrough of the live EKS deployment, in this order:
+1. Book → check in → complete an appointment, plus status filters and the mobile layout.
+2. Swagger API call.
+3. Prometheus targets and the Grafana dashboard under load.
+4. A real commit (`9c1d5e6`, today's date in the header) pushed to `main` and followed through GitHub Actions (test → build + Trivy + GHCR → deploy). The pipeline wait is sped up 8×.
+5. The change appearing live on EKS.
+
 All screenshots are in [`docs/screenshots/`](docs/screenshots). They were taken from the running system: the local Docker Compose stack and the EKS cluster in `ap-southeast-2`. Terminal screenshots are rendered from the real command output.
 
 ### M1 — Application (frontend + backend + database)
