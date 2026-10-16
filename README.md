@@ -180,7 +180,7 @@ No secrets are committed. `.env`, `*.tfvars` and Terraform state are git-ignored
 Creates, in `ap-south-1`:
 
 - VPC `10.30.0.0/16` with **2 public + 2 private subnets** across 2 AZs, internet gateway and one NAT gateway
-- EKS cluster `clinicflow-eks` (Kubernetes 1.31) with a managed node group (2× `t3.medium`, scales 2–4)
+- EKS cluster `clinicflow-eks` (Kubernetes 1.31) with a managed node group (2× `m7i-flex.large`, free-tier eligible, scales 2–4)
 - EKS add-ons: CoreDNS, kube-proxy, VPC CNI, **EBS CSI driver** (with IRSA role, needed for the PostgreSQL PVC)
 
 ```bash
