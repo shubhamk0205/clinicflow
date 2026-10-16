@@ -124,6 +124,10 @@ AWS Console (Sydney, `ap-southeast-2`): the VPC, its 2 public + 2 private subnet
 
 ![kubectl get nodes](docs/screenshots/term-nodes.png)
 
+`terraform destroy` after the demo: all 58 resources removed, and AWS confirms no cluster, VPC or instances remain. The Helm releases were uninstalled first, so the Ingress load balancer and the PostgreSQL EBS volume were deleted before the VPC:
+
+![terraform destroy](docs/screenshots/term-tfdestroy.png)
+
 ### M8 — Kubernetes + Helm
 
 ![kubectl get pods](docs/screenshots/term-pods.png)
