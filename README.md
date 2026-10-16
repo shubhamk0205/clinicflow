@@ -101,6 +101,16 @@ Both images scanned in CI with `severity: HIGH,CRITICAL` and `exit-code: 1`. Res
 
 ![terraform plan](docs/screenshots/term-tfplan.png)
 
+AWS Console (Sydney, `ap-southeast-2`): the VPC, its 2 public + 2 private subnets, the active EKS cluster and its managed node group:
+
+![AWS VPC](docs/screenshots/aws-vpc.jpg)
+
+![AWS subnets](docs/screenshots/aws-subnets.jpg)
+
+![AWS EKS cluster](docs/screenshots/aws-eks-cluster.jpg)
+
+![AWS EKS node group](docs/screenshots/aws-eks-nodegroup.jpg)
+
 `terraform apply` outputs and the EKS worker nodes:
 
 ![terraform output](docs/screenshots/term-tfoutput.png)
