@@ -8,6 +8,8 @@ const DEPARTMENTS = ['GENERAL', 'CARDIOLOGY', 'DERMATOLOGY', 'PEDIATRICS', 'ORTH
 const NEXT_STATUS = { SCHEDULED: 'CHECKED_IN', CHECKED_IN: 'COMPLETED' };
 
 const label = (s) => s.charAt(0) + s.slice(1).toLowerCase().replace('_', ' ');
+const today = () =>
+  new Date().toLocaleDateString([], { weekday: 'long', day: 'numeric', month: 'long' }).toUpperCase();
 const formatTime = (iso) =>
   new Date(iso).toLocaleString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
 
@@ -98,7 +100,7 @@ function App() {
       <main className="main">
         <header>
           <div>
-            <p className="eyebrow">CLINIC / TODAY</p>
+            <p className="eyebrow">CLINIC / {today()}</p>
             <h1>Appointments overview</h1>
             <p className="muted">Book, check in and complete patient visits.</p>
           </div>
