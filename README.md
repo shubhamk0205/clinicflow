@@ -153,7 +153,9 @@ Grafana "ClinicFlow API" dashboard with live data (requests/s, p95 latency, 5xx 
 
 ### M10 — Commit → pipeline → deployment
 
-A UI fix was committed and pushed. GitHub Actions tested, built, scanned and pushed the images for that commit, and Helm rolled the new SHA out to EKS (revision 3):
+Every push to `main` runs the full pipeline. The `deploy` job connects to EKS and runs `helm upgrade --install` with the new commit SHA. The run below deployed commit `936a85d` as Helm revision 4, and both Deployments now run that exact image tag:
+
+![CI deploy run](docs/screenshots/github-actions-run.png)
 
 ![Helm rollout of new SHA](docs/screenshots/term-rollout.png)
 
