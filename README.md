@@ -13,7 +13,7 @@ It is built and shipped end-to-end with a production-style DevOps toolchain:
 | Containers | Docker, Docker Compose |
 | CI/CD | GitHub Actions → GHCR (images tagged with commit SHA) |
 | Security | Trivy image scan (fails on HIGH/CRITICAL) |
-| Infrastructure | Terraform → AWS VPC + EKS (`ap-south-1`) |
+| Infrastructure | Terraform → AWS VPC + EKS (`ap-southeast-2`) |
 | Orchestration | Kubernetes, Helm, Ingress (ingress-nginx), HPA |
 | Observability | Prometheus + Grafana (kube-prometheus-stack), `/metrics` |
 
@@ -177,10 +177,10 @@ No secrets are committed. `.env`, `*.tfvars` and Terraform state are git-ignored
 
 ## Terraform — AWS VPC + EKS
 
-Creates, in `ap-south-1`:
+Creates, in `ap-southeast-2`:
 
 - VPC `10.30.0.0/16` with **2 public + 2 private subnets** across 2 AZs, internet gateway and one NAT gateway
-- EKS cluster `clinicflow-eks` (Kubernetes 1.31) with a managed node group (2× `t3.medium`, scales 2–4)
+- EKS cluster `clinicflow-eks` (Kubernetes 1.31) with a managed node group (2× `m7i-flex.large`, free-tier eligible, scales 2–4)
 - EKS add-ons: CoreDNS, kube-proxy, VPC CNI, **EBS CSI driver** (with IRSA role, needed for the PostgreSQL PVC)
 
 ```bash
@@ -189,7 +189,7 @@ cp terraform.tfvars.example terraform.tfvars   # optional; defaults work
 terraform init
 terraform plan
 terraform apply
-aws eks update-kubeconfig --region ap-south-1 --name clinicflow-eks
+aws eks update-kubeconfig --region ap-southeast-2 --name clinicflow-eks
 ```
 
 > ⚠️ EKS and the NAT gateway cost money by the hour. Run `terraform destroy` as soon as you have your screenshots / demo. First uninstall the Helm releases (below) so the ingress load balancer is deleted before the VPC.

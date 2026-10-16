@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region for all resources"
   type        = string
-  default     = "ap-south-1"
+  default     = "ap-southeast-2"
 }
 
 variable "environment" {
@@ -31,7 +31,7 @@ variable "vpc_cidr" {
 variable "node_instance_types" {
   description = "Instance types for the managed node group"
   type        = list(string)
-  default     = ["t3.medium"]
+  default     = ["m7i-flex.large"] # free-tier eligible on the AWS Free plan (2 vCPU, 8 GiB)
 }
 
 variable "node_min_size" {
