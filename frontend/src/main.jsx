@@ -143,16 +143,18 @@ function App() {
                         <td><span className="dept">{label(a.department)}</span></td>
                         <td>{formatTime(a.scheduled_at)}</td>
                         <td><span className={`status ${a.status.toLowerCase()}`}>{label(a.status)}</span></td>
-                        <td className="actions">
-                          {NEXT_STATUS[a.status] && (
-                            <button className="small" onClick={() => setStatus(a, NEXT_STATUS[a.status])}>
-                              {a.status === 'SCHEDULED' ? 'Check in' : 'Complete'}
-                            </button>
-                          )}
-                          {a.status === 'SCHEDULED' && (
-                            <button className="small ghost" onClick={() => setStatus(a, 'CANCELLED')}>Cancel</button>
-                          )}
-                          <button className="icon-btn" title="Delete" onClick={() => remove(a)}>✕</button>
+                        <td>
+                          <div className="actions">
+                            {NEXT_STATUS[a.status] && (
+                              <button className="small" onClick={() => setStatus(a, NEXT_STATUS[a.status])}>
+                                {a.status === 'SCHEDULED' ? 'Check in' : 'Complete'}
+                              </button>
+                            )}
+                            {a.status === 'SCHEDULED' && (
+                              <button className="small ghost" onClick={() => setStatus(a, 'CANCELLED')}>Cancel</button>
+                            )}
+                            <button className="icon-btn" title="Delete" onClick={() => remove(a)}>✕</button>
+                          </div>
                         </td>
                       </tr>
                     ))}

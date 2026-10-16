@@ -18,7 +18,7 @@
     {
       "type": "timeseries", "title": "Error rate (5xx / s)",
       "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
-      "targets": [{"expr": "sum(rate(http_requests_total{status=\"5xx\"}[1m]))", "legendFormat": "5xx"}]
+      "targets": [{"expr": "sum(rate(http_requests_total{status=\"5xx\"}[1m])) or vector(0)", "legendFormat": "5xx"}]
     },
     {
       "type": "stat", "title": "Backend pods up",
