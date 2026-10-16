@@ -27,22 +27,6 @@ module "vpc" {
   private_subnet_tags = { "kubernetes.io/role/internal-elb" = 1 }
 }
 
-# ---------- IAM role so the EBS CSI driver can create volumes for the Postgres PVC ----------
-module "ebs_csi_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "5.60.0"
-
-  role_name             = "${var.cluster_name}-ebs-csi"
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
-}
-
 # ---------- EKS cluster with one managed worker node group ----------
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -57,13 +41,15 @@ module "eks" {
   cluster_endpoint_public_access           = true
   enable_cluster_creator_admin_permissions = true
 
+  # The AWS Free plan organization policy denies iam:CreateOpenIDConnectProvider,
+  # so IRSA is disabled and the EBS CSI driver uses the node role's permissions instead.
+  enable_irsa = false
+
   cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.ebs_csi_irsa.iam_role_arn
-    }
+    coredns            = {}
+    kube-proxy         = {}
+    vpc-cni            = {}
+    aws-ebs-csi-driver = {}
   }
 
   eks_managed_node_groups = {
@@ -72,6 +58,11 @@ module "eks" {
       min_size       = var.node_min_size
       max_size       = var.node_max_size
       desired_size   = var.node_desired_size
+
+      # Lets the EBS CSI driver create volumes for the PostgreSQL PVC
+      iam_role_additional_policies = {
+        ebs_csi = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+      }
     }
   }
 }

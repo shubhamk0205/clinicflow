@@ -181,7 +181,7 @@ Creates, in `ap-southeast-2`:
 
 - VPC `10.30.0.0/16` with **2 public + 2 private subnets** across 2 AZs, internet gateway and one NAT gateway
 - EKS cluster `clinicflow-eks` (Kubernetes 1.31) with a managed node group (2× `m7i-flex.large`, free-tier eligible, scales 2–4)
-- EKS add-ons: CoreDNS, kube-proxy, VPC CNI, **EBS CSI driver** (with IRSA role, needed for the PostgreSQL PVC)
+- EKS add-ons: CoreDNS, kube-proxy, VPC CNI, **EBS CSI driver** (needed for the PostgreSQL PVC; it uses the node IAM role because the AWS Free plan blocks creating the OIDC provider that IRSA needs)
 
 ```bash
 cd terraform
