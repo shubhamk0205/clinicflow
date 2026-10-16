@@ -30,6 +30,123 @@ Developer → GitHub → GitHub Actions ─┬─ pytest + frontend build
                                                          Prometheus (ServiceMonitor) → Grafana
 ```
 
+- **Repository:** https://github.com/shubhamk0205/clinicflow
+- **CI/CD runs:** https://github.com/shubhamk0205/clinicflow/actions
+- **Images:** `ghcr.io/shubhamk0205/clinicflow-backend` and `ghcr.io/shubhamk0205/clinicflow-frontend`
+
+---
+
+## Submission evidence (by grading module)
+
+All screenshots are in [`docs/screenshots/`](docs/screenshots). They were taken from the running system: the local Docker Compose stack and the EKS cluster in `ap-southeast-2`. Terminal screenshots are rendered from the real command output.
+
+### M1 — Application (frontend + backend + database)
+
+Dashboard served from EKS through the Ingress load balancer:
+
+![ClinicFlow dashboard](docs/screenshots/app-dashboard.png)
+
+Booking modal and the responsive mobile layout:
+
+<p>
+  <img src="docs/screenshots/app-book-modal.png" alt="Book appointment modal" width="68%">
+  <img src="docs/screenshots/app-mobile.png" alt="Mobile layout" width="24%">
+</p>
+
+REST API in Swagger (`/docs`): 5 CRUD endpoints, stats, health, readiness and metrics:
+
+![Swagger UI](docs/screenshots/swagger.png)
+
+### M2 — Testing (pytest)
+
+11 tests against an isolated SQLite test database (`tests/conftest.py`, `pytest.ini`):
+
+![pytest -v](docs/screenshots/term-pytest.png)
+
+### M3 — Git and GitHub
+
+![git log](docs/screenshots/term-gitlog.png)
+
+![GitHub commit history](docs/screenshots/github-commits.png)
+
+### M4 — Docker + Compose
+
+`docker compose up --build` starts postgres, backend and frontend. Both app images run as non-root (uid 10001 / 101), and the data lands in PostgreSQL:
+
+![docker compose](docs/screenshots/term-compose.png)
+
+![localhost:3000](docs/screenshots/localhost-3000.png)
+
+### M5 — CI/CD (GitHub Actions → GHCR)
+
+Pipeline on push to `main`: pytest + frontend build → Docker build → Trivy → push to GHCR. Image tags are the commit SHA:
+
+![GitHub Actions run](docs/screenshots/github-actions-run.png)
+
+![GitHub Actions history](docs/screenshots/github-actions-list.png)
+
+![GHCR packages](docs/screenshots/ghcr-packages.png)
+
+![GHCR SHA tags](docs/screenshots/ghcr-backend.png)
+
+### M6 — DevSecOps (Trivy)
+
+Both images scanned in CI with `severity: HIGH,CRITICAL` and `exit-code: 1`. Result: 0 vulnerabilities (see [Security — Trivy](#security--trivy) for the explanation):
+
+![Trivy scan](docs/screenshots/term-trivy.png)
+
+### M7 — Terraform (AWS VPC + EKS)
+
+`terraform plan`: 61 resources, including the VPC, 2 public + 2 private subnets, NAT gateway, EKS cluster and managed node group:
+
+![terraform plan](docs/screenshots/term-tfplan.png)
+
+`terraform apply` outputs and the EKS worker nodes:
+
+![terraform output](docs/screenshots/term-tfoutput.png)
+
+![kubectl get nodes](docs/screenshots/term-nodes.png)
+
+### M8 — Kubernetes + Helm
+
+![kubectl get pods](docs/screenshots/term-pods.png)
+
+![kubectl get svc,ingress](docs/screenshots/term-svc.png)
+
+![helm list](docs/screenshots/term-helm.png)
+
+HPA scaling the backend from 2 → 4 replicas under load:
+
+![HPA](docs/screenshots/term-hpa.png)
+
+Troubleshooting labs:
+
+![broken image](docs/screenshots/term-broken-image.png)
+
+![broken service](docs/screenshots/term-broken-service.png)
+
+### M9 — Observability (Prometheus + Grafana)
+
+Backend `/metrics`:
+
+![metrics](docs/screenshots/metrics.png)
+
+Prometheus scraping every backend pod through the ServiceMonitor (all **UP**):
+
+![Prometheus targets](docs/screenshots/prometheus-targets.png)
+
+![Prometheus query](docs/screenshots/prometheus-query.png)
+
+Grafana "ClinicFlow API" dashboard with live data (requests/s, p95 latency, 5xx rate, backend pods during the HPA test):
+
+![Grafana dashboard](docs/screenshots/grafana-dashboard.png)
+
+### M10 — Commit → pipeline → deployment
+
+A UI fix was committed and pushed. GitHub Actions tested, built, scanned and pushed the images for that commit, and Helm rolled the new SHA out to EKS (revision 3):
+
+![Helm rollout of new SHA](docs/screenshots/term-rollout.png)
+
 ---
 
 ## Repository structure
